@@ -1,5 +1,7 @@
 ## Make a file named credentials.js
+```JS
 module.exports = {
-        'id': '',
-        'secret': ''
+        'id': 'App ID',
+        'secret': 'App Secret'
 }
+```
