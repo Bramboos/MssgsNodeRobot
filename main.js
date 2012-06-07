@@ -7,6 +7,7 @@ var net = require( 'net') ,
         
         // Is valid
         client.valid = false;
+        client.ops   = [];
         
         // Events
         client.on( 'server: credentials', function( data ) {
@@ -28,13 +29,37 @@ var net = require( 'net') ,
                 })  
         })
         client.on( 'server: conversation', function( data ) {
-                client.package( 'message', {
-                        'text': 'Hi ' + data.usernames.join( ', ' ) + ' - I\'m the Mssgs NodeJS Robot',
-                        'conversation': data.id
-                })  
+                client.opts = data.ops;
+        })
+        client.on( 'server: new op', function( data ) {
+                if( client.ops.indexOf( data.username ) == -1 )
+                        client.ops.push( data.username ) 
+        })
+        client.on( 'server: new unop', function( data ) {
+                if( client.ops.indexOf( data.username ) > -1 )
+                        client.ops.splice( client.ops.indexOf( data.username ), 1 ) 
+        })
+        client.on( 'server: leave conversation', function( data ) {
+                if( client.ops.indexOf( data.username ) > -1 )
+                        client.ops.splice( client.ops.indexOf( data.username ), 1 ) 
         })
         client.on( 'server: message', function( data ) {
-                console.log(data)
+                if( data.internal === true ) {
+                        // Internal message
+                        var internalMethod = data.message.split( ':' )[0].toLowerCase();
+                        data.message = JSON.parse( data.message.substr( data.message.split( ':' )[0].length+1 ) )
+                        switch( internalMethod ) {
+                                case 'join':
+                                        // data.message.username
+                                break;
+                                case 'leave':
+                                        // data.message.username
+                                break;
+                        }
+                }
+                else {
+                        // Normal message
+                }
         })
 });
 
