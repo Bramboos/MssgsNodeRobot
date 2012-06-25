@@ -1,5 +1,5 @@
 var tls = require( 'tls') ,
- client = net.connect( 8101, 'api.mss.gs', function() { //'connect' listener
+ client = tls.connect( 8101, 'api.mss.gs', function() { //'connect' listener
         console.log( 'Connected' )
         
         // Credentials required
