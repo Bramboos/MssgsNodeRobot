@@ -1,4 +1,4 @@
-var net = require( 'net') ,
+var tls = require( 'tls') ,
  client = net.connect( 8101, 'api.mss.gs', function() { //'connect' listener
         console.log( 'Connected' )
         
@@ -24,7 +24,7 @@ var net = require( 'net') ,
         })
         client.on( 'server: credentials valid', function( data ) {
                 client.package( 'auth', {
-                        'username': 'MssgsRobot',
+                        'username': 'MssgsNodeJSRobot',
                         'conversationId': 'dev'
                 })  
         })
@@ -62,9 +62,9 @@ var net = require( 'net') ,
                 }
         })
 });
-
 var package = '', ending = ',"end":true}\r\n\r\n';
 client.package = function( method, data ){
+        console.log( 'Sending ' + method + '' )
         this.write( JSON.stringify({
                 method: method,
                 data: data,
@@ -110,6 +110,7 @@ client.on( 'package', function( package ) {
 client.on( 'end', function() {
         console.log( 'Disconnected' )
 })
+client.setEncoding( 'utf8' )
 
 // Clean shutdown
 process.on( 'exit', function(){
